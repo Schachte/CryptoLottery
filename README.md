@@ -1,70 +1,50 @@
-# Getting Started with Create React App
+# Crypto Lottery
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Decentralized lottery implementation designed to run on the Ethereum Rinkeby test network.
 
-## Available Scripts
+You can view the list of transactions on the deployed contract by [clicking this link to load Etherscan.](https://rinkeby.etherscan.io/address/0x83257b12a4cf1d7c4ccd600a3e12bcfe278cf259)
 
-In the project directory, you can run:
+![demo](./assets/demo.png)
 
-### `npm start`
+## Project Structure
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+The project is structured into 2 main components:
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+- `blockchain`
+    - Handles the solidity contract and logic that connects into the Ethereum blockchain network (Rinkeby in this instance).
+    - Compilation to generate the application binary interface (ABI)
+    - Deployment automation for deploying the contract to the specified network
+    - Unit tests module to test the logic of the module and verify it's correctness.
 
-### `npm test`
+- `ux`
+    - Handles the frontend component in `React`
+    - Enables a user to join lottery by submitting `transactions` from a users wallet using `metamask`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## How It Works?
 
-### `npm run build`
+This is decentralized application, there is no server or entity that controls the application once it's deployed. The logic of the application exists in the contract underneath `blockchain` dir and is _immutable_.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Users can offer > .2 `ETH` via the application and sign the transaction via `Metamask` plugin. 
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Once the transaction is added to a block that some remote miner has mined, the user has entered into the lottery.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+A `manager` - ie _contract owner` (addres in which deployed the contract originally) is able to select a winner, which will randomly select a public key stored in the contract at random.
 
-### `npm run eject`
+Once a winner is selected, the balance of the contract (minus gas fees) will be automatically transferred into the winners wallet.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## Tests    
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+You can run a suite of end-to-end tests that verify the correctness of the contract. This is done by leveraging an in-memory (single node) test network that mimicks the Ethereum blockchain. The test instances are pre-loaded with accounts having ~100ETH.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+0. `cd ux && npm i` - install deps
+1. `cd ux && npm run test` - run tests via mocha
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## Deploying Contract
 
-## Learn More
+Check out the `deploy.js` file to ensure you mneumonic and network node IP or DNS name to the network you want to connect to is specified properly.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+`npm run deploy` will deploy the contract by compiling the contract into EVM executable bytecode. This bytecode is what is run on the nodes in the blockchain via the EVM (Ethereum virtual machine).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+We output the application binary interface to act as a proxy/intermediary which enables high-level interpreted languages like JS to interface with the blockchain from the browser safely and securely.
 
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Migrating the ABI as the contract changes as well as the 64 bit hash into the UI will be the bridge for connectivity. 
